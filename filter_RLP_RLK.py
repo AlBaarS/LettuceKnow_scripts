@@ -1,8 +1,7 @@
-import sys
-
 # files
 input = open("/hpc/uu_pmi/Lettuceknow_JK_hpc/Lsativa_467_v5_out.tsv","r")
 IPR = input.readlines()
+input.close()
 out = open("/hpc/uu_pmi/alejandro/InterProScan_sorted.tsv","w")
 out.write("# geneID" + "\t" + "type" + "\t" + "length" + "\t" + "extracellular_domain" + "\t" + "annotations")
 out.close()
@@ -39,10 +38,6 @@ protID = list(tmp)
 print("Total proteins: " + str(len(protID)))
 
 # then we filter our annotations from the input
-x = 0
-y = 0
-z = 0
-p = 0
 
 dom = [LRR,LysM,L_Lec,B_Lec,C_Lec,Malectin,GNK2_homologous,Thaumatin,Chitinase,EGF_rep,SERK,PAN,TNFR]
 dom_names = ["LRR","Lysin Motif","L-type Lectin","B-type Lectin","C-type Lectin","Malectin","GNK2-homologous","Thaumatin","Chitinase","EGF-repeat","SERK","PAN","TNFR"]
@@ -54,47 +49,49 @@ for id in protID:
 	lst = []
 	ann_hit = []
 	name_hit = []
-	p += 1
 	for line in IPR:
 		if id in line:
 			if TM in line:
-				x += 1
 				tm = True
 			elif SP in line:
-				y += 1
 				sp = True
 			for k in KIN:
 				if k in line:
-					z += 1
 					kin = True
-	if tm == True:
-		if sp == True:
 			lst.append(line)
+	if tm == False:
+		lst = []
+	elif tm == True:
+		if sp == False:
+			lst = []
 	# with the proteins with a signal peptide and transmembrane domain selected, now we need to select the extracellular domains
 	length = ""
-	for lin in lst:
-		tmp = lin.split("\t")
-		for m in tmp:
-			for x in range(0,13):
-				for n in dom[x]:
-					if n in m:
-						ann_hit.append(n)
-						name_hit.append(dom_names[x])
-		length = tmp[2]
-	ann_hit = list(set(ann_hit))
-	name_hit = list(set(name_hit))
-	type = ""
-	if kin == True:
-		type = "RLK"
-	elif kin == False:
-		type = "RLP"
-	with open("/hpc/uu_pmi/alejandro/InterProScan_sorted.tsv","a") as out:
-		out.write("\n" + id + "\t" + type + "\t" + length + "\t" + str(name_hit) + "\t" + str(ann_hit))
-
+	if lst != []:
+		for lin in lst:
+			tmp = lin.split("\t")
+			for m in tmp:
+				for x in range(0,13):
+					for n in dom[x]:
+						if n in m:
+							ann_hit.append(n)
+							name_hit.append(dom_names[x])
+			length = tmp[2]
+		ann_hit = list(set(ann_hit))
+		name_hit = list(set(name_hit))
+		type = ""
+		if kin == True:
+			type = "RLK"
+		elif kin == False:
+			type = "RLP"
+		if sp == True:
+			if tm == True:
+				with open("/hpc/uu_pmi/alejandro/InterProScan_sorted.tsv","a") as out:
+					out.write("\n" + id + "\t" + type + "\t" + length + "\t" + str(name_hit) + "\t" + str(ann_hit))
+					print(id + "\t" + type + "\t" + length + "\t" + str(name_hit) + "\t" + str(ann_hit))
 # print stats
-print(str(p) + " proteins in total")
-print(str(x) + " proteins with a transmembrane domain.")
-print(str(y) + " proteins with a signal peptide.")
-print(str(z) + " proteins with a kinase domain.")
+#print(str(p) + " proteins in total")
+#print(str(x) + " proteins with a transmembrane domain.")
+#print(str(y) + " proteins with a signal peptide.")
+#print(str(z) + " proteins with a kinase domain.")
 print(str(len(rlk_raw)) + " proteins with a signal peptide, transmembrane and kinase domain.")
 print(str(len(rlp_raw)) + " proteins with a signal peptide, transmembrane domain but without a kinase domain.")
