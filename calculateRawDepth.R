@@ -43,10 +43,7 @@ ylab(label = "Sample")
 ## saving plot
 ggsave(filename = "Lsativa_SOBIR1L_depth.png", plot = depth.heatmap, device = png(), path = "/hpc/uu_pmi/alejandro/", width = 8, height = 11)
 
-## stats *** WIP ***
+## stats
 depth_stats <- data.frame(Means=rowMeans(depth_df[,-1]),StDev=rowSds(as.matrix(depth_df[,c(-1)])))
 depth_stats <- tibble::rownames_to_column(depth_stats, "Samples")
 write.table(depth_stats, "/hpc/uu_pmi/alejandro/SOBIR1L_depth_mean_stdev.csv", quote=FALSE, sep=",", row.names=FALSE)
-
-ref_sample <- as.numeric(as.vector(depth_df[98,]))
-depth_Pval <- read.table(text = "", col.names="P-value")
