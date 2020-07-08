@@ -21,8 +21,5 @@ There was an annoying issue in my VCF files that they had a label "SnpCluster", 
 ## sample2species.py
 In the later stages of my project, I want to change the sample IDs for species name. So I wrote a script to do that for me, rather than manually re-writing 100 names per file. It takes an input file, a csv file with the sample IDs and species name and an output directory to paste the new file into (the old file is not affected). It can either replace the label or keep the label, but paste the species in front of it, seperated by an underscore, which is convenient if you have more samples per species (like I do).
 
-## select_domains.py
-This script is the predecessor of filter_RLP_RLK.py, which I made on my desktop rather than on the HPC to extract from pre-organised data.
-
 ## stats_RLP_RLK.py
 Generate some statistics on my selected RLPs and RLKs (my genes of interest)
